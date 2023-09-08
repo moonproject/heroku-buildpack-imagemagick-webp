@@ -9,7 +9,7 @@ This buildpack works with BOTH [Heroku stack](https://devcenter.heroku.com/artic
 Add this buildpack to your app:
 
 ```plain
-heroku buildpacks:add https://github.com/drnic/heroku-buildpack-imagemagick-webp -i 1 -a <app name>
+heroku buildpacks:add https://github.com/alois-gaucher/heroku-buildpack-imagemagick-webp -i 1 -a <app name>
 ```
 
 And add it into your `app.json`:
@@ -17,7 +17,7 @@ And add it into your `app.json`:
 ```json
   "buildpacks": [
     {
-      "url": "https://github.com/drnic/heroku-buildpack-imagemagick-webp"
+      "url": "https://github.com/alois-gaucher/heroku-buildpack-imagemagick-webp"
     },
     {
       "url": "heroku/ruby"
@@ -47,10 +47,10 @@ Delegates (built-in): bzlib djvu fontconfig freetype heic jbig jng jpeg lcms lqr
 Compiler: gcc (9.3)
 
 ~ $ dwebp -version
-1.2.2
+1.3.1
 
 ~ $ heif-info -h
- heif-info  libheif version: 1.12.0
+ heif-info  libheif version: 1.16.2
 ```
 
 ## Build script
@@ -61,7 +61,11 @@ To update the dependencies you have the following steps:
 2. Re-build the `build/imagemagick.tar.gz` file
 
     ```plain
-    ./build.sh
+    ./build.sh (Builds Dockerfile.22 by default)
+    ```
+
+    ```plain
+    ./build.sh 20 (To build Dockerfile.20)
     ```
 
 3. Git the changes, including the tar.gz file, and push to your fork
