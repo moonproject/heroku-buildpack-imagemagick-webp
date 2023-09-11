@@ -17,18 +17,18 @@ RUN curl -L https://github.com/strukturag/libde265/releases/download/v$LIBDE265_
   && cd libde265-$LIBDE265_VERSION \
   && ./autogen.sh \
   && ./configure --prefix=/usr/src/imagemagick \
-  && make -j 4 \
+  && make -j$(nproc) \
   && make install
 
 # https://github.com/strukturag/libheif/releases
-ENV LIBHIEF_VERSION=1.16.2
+ENV LIBHIEF_VERSION=1.15.2
 
 RUN curl -L https://github.com/strukturag/libheif/releases/download/v$LIBHIEF_VERSION/libheif-$LIBHIEF_VERSION.tar.gz | tar zx \
   && cd libheif-$LIBHIEF_VERSION \
-  && mkdir build && cd build \
-  && cmake --preset=release .. \
-  && make -j 4 \
-  && make install DESTDIR=/usr/src/imagemagick
+  && ./autogen.sh \
+  && ./configure --prefix=/usr/src/imagemagick \
+  && make \
+  && make install
 
 # https://github.com/webmproject/libwebp/tags
 ENV LIBWEBP_VERSION=1.3.1
@@ -37,7 +37,7 @@ RUN cd /opt \
   &&   curl -L http://storage.googleapis.com/downloads.webmproject.org/releases/webp/libwebp-$LIBWEBP_VERSION.tar.gz | tar zx \
   && cd libwebp-$LIBWEBP_VERSION \
   && ./configure  \
-  && make -j 4 \
+  && make -j$(nproc) \
   && make install
 
 
@@ -57,14 +57,22 @@ RUN cd /usr/src/ \
   && curl -L https://github.com/ImageMagick/ImageMagick/archive/refs/tags/$IMAGEMAGICK_VERSION.tar.gz | tar zx \
   && cd ImageMagick-7* \
   && ./configure --with-heic=yes --with-webp=yes --prefix=/usr/src/imagemagick \
-  && make -j 4 \
+  && make -j$(nproc) \
   && make install
 
 # Additional copy of libwebp that will be included in the .tar.gz for Heroku
 RUN curl -L http://storage.googleapis.com/downloads.webmproject.org/releases/webp/libwebp-$LIBWEBP_VERSION.tar.gz | tar zx \
   && cd libwebp-$LIBWEBP_VERSION \
   && ./configure --prefix=/usr/src/imagemagick \
-  && make -j 4 \
+  && make -j$(nproc) \
+  && make install
+
+# Additional copy of libheif that will be included in the .tar.gz for Heroku
+RUN curl -L https://github.com/strukturag/libheif/releases/download/v$LIBHIEF_VERSION/libheif-$LIBHIEF_VERSION.tar.gz | tar zx \
+  && cd libheif-$LIBHIEF_VERSION \
+  && ./autogen.sh \
+  && ./configure --prefix=/usr/src/imagemagick \
+  && make -j$(nproc) \
   && make install
 
 RUN cd /usr/src/imagemagick \
